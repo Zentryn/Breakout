@@ -1,0 +1,32 @@
+﻿  Object.cpp
+  main.cpp
+  LevelManager.cpp
+  Level.cpp
+c:\users\veikka.kyllonen\desktop\breakout\breakout\level.cpp(53): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+c:\users\veikka.kyllonen\desktop\breakout\breakout\level.cpp(141): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
+c:\users\veikka.kyllonen\desktop\breakout\breakout\level.cpp(142): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
+c:\users\veikka.kyllonen\desktop\breakout\breakout\level.cpp(148): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
+c:\users\veikka.kyllonen\desktop\breakout\breakout\level.cpp(149): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
+c:\users\veikka.kyllonen\desktop\breakout\breakout\level.cpp(151): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
+c:\users\veikka.kyllonen\desktop\breakout\breakout\level.cpp(152): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
+  App.cpp
+c:\users\veikka.kyllonen\desktop\breakout\breakout\app.cpp(51): warning C4244: 'argument': conversion from 'GLuint' to 'float', possible loss of data
+  Generating Code...
+  Engine.lib(ShaderProgram.obj) : MSIL .netmodule or module compiled with /GL found; restarting link with /LTCG; add /LTCG to the link command line to improve linker performance
+LINK : warning LNK4075: ignoring '/INCREMENTAL' due to '/LTCG' specification
+Engine.lib(ShaderProgram.obj) : error LNK2038: mismatch detected for '_ITERATOR_DEBUG_LEVEL': value '0' doesn't match value '2' in App.obj
+Engine.lib(ShaderProgram.obj) : error LNK2038: mismatch detected for 'RuntimeLibrary': value 'MD_DynamicRelease' doesn't match value 'MDd_DynamicDebug' in App.obj
+Engine.lib(InputManager.obj) : error LNK2038: mismatch detected for '_ITERATOR_DEBUG_LEVEL': value '0' doesn't match value '2' in App.obj
+Engine.lib(InputManager.obj) : error LNK2038: mismatch detected for 'RuntimeLibrary': value 'MD_DynamicRelease' doesn't match value 'MDd_DynamicDebug' in App.obj
+Engine.lib(Window.obj) : error LNK2038: mismatch detected for '_ITERATOR_DEBUG_LEVEL': value '0' doesn't match value '2' in App.obj
+Engine.lib(Window.obj) : error LNK2038: mismatch detected for 'RuntimeLibrary': value 'MD_DynamicRelease' doesn't match value 'MDd_DynamicDebug' in App.obj
+Engine.lib(Timing.obj) : error LNK2038: mismatch detected for '_ITERATOR_DEBUG_LEVEL': value '0' doesn't match value '2' in App.obj
+Engine.lib(Timing.obj) : error LNK2038: mismatch detected for 'RuntimeLibrary': value 'MD_DynamicRelease' doesn't match value 'MDd_DynamicDebug' in App.obj
+Engine.lib(Renderer.obj) : error LNK2038: mismatch detected for '_ITERATOR_DEBUG_LEVEL': value '0' doesn't match value '2' in App.obj
+Engine.lib(Renderer.obj) : error LNK2038: mismatch detected for 'RuntimeLibrary': value 'MD_DynamicRelease' doesn't match value 'MDd_DynamicDebug' in App.obj
+Engine.lib(Resources.obj) : error LNK2038: mismatch detected for '_ITERATOR_DEBUG_LEVEL': value '0' doesn't match value '2' in App.obj
+Engine.lib(Resources.obj) : error LNK2038: mismatch detected for 'RuntimeLibrary': value 'MD_DynamicRelease' doesn't match value 'MDd_DynamicDebug' in App.obj
+Engine.lib(IOManager.obj) : error LNK2038: mismatch detected for '_ITERATOR_DEBUG_LEVEL': value '0' doesn't match value '2' in App.obj
+Engine.lib(IOManager.obj) : error LNK2038: mismatch detected for 'RuntimeLibrary': value 'MD_DynamicRelease' doesn't match value 'MDd_DynamicDebug' in App.obj
+LINK : warning LNK4098: defaultlib 'MSVCRT' conflicts with use of other libs; use /NODEFAULTLIB:library
+C:\Users\veikka.kyllonen\Desktop\Breakout\Debug\Breakout.exe : fatal error LNK1319: 14 mismatches detected
