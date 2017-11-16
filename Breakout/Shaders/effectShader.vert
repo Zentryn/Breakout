@@ -17,7 +17,7 @@ void main() {
         float strength = 0.3;
         TexCoords = vec2(aTexCoords.x + sin(time) * strength, aTexCoords.y + cos(time) * strength);
     }
-    if (confuse) {
+    else if (confuse) {
         TexCoords = vec2(1.0 - TexCoords.x, 1.0 - TexCoords.y);
     } else {
         TexCoords = aTexCoords;

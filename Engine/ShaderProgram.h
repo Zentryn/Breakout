@@ -30,6 +30,7 @@ public:
 	void setVec3(const char* name, const glm::vec3& value);
 	void setVec3(const char* name, const float& v0, const float& v1, const float& v2);
 	void setMat4(const char* name, const glm::mat4& value);
+	void setIntArray(const char* name, const int nrElements, const int value[]);
 	void setFloatArray(const char* name, const int nrElements, const float value[]);
 	void setKernel(const char* name, const float value[9][2]);
 

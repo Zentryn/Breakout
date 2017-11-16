@@ -120,6 +120,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="App.cpp" />
+    <ClCompile Include="GameManager.cpp" />
     <ClCompile Include="Level.cpp" />
     <ClCompile Include="LevelManager.cpp" />
     <ClCompile Include="main.cpp" />
@@ -129,11 +130,13 @@
   <ItemGroup>
     <ClInclude Include="App.h" />
     <ClInclude Include="ColorCodes.h" />
+    <ClInclude Include="GameManager.h" />
     <ClInclude Include="Level.h" />
     <ClInclude Include="LevelFormat.h" />
     <ClInclude Include="LevelManager.h" />
     <ClInclude Include="Object.h" />
     <ClInclude Include="PostProcessor.h" />
+    <ClInclude Include="Powerups.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

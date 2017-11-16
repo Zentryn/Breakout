@@ -1,10 +1,5 @@
-﻿  Timing.cpp
-Timing.cpp(21): warning C4244: '=': conversion from 'Uint32' to 'float', possible loss of data
-Timing.cpp(27): warning C4244: '=': conversion from 'Uint32' to 'float', possible loss of data
-Timing.cpp(40): warning C4244: 'argument': conversion from 'float' to 'Uint32', possible loss of data
-Timing.cpp(67): warning C4244: '=': conversion from 'Uint32' to 'float', possible loss of data
-Timing.cpp(77): warning C4018: '<': signed/unsigned mismatch
-Timing.cpp(86): warning C4305: '=': truncation from 'double' to 'float'
+﻿  RandomEngine.cpp
+RandomEngine.cpp(15): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
 SDL2_mixer.lib(SDL2_mixer.dll) : warning LNK4006: __NULL_IMPORT_DESCRIPTOR already defined in SDL2.lib(SDL2.dll); second definition ignored
 opengl32.lib(OPENGL32.dll) : warning LNK4006: __NULL_IMPORT_DESCRIPTOR already defined in SDL2.lib(SDL2.dll); second definition ignored
 glew32.lib(glew32.dll) : warning LNK4006: __NULL_IMPORT_DESCRIPTOR already defined in SDL2.lib(SDL2.dll); second definition ignored

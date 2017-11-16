@@ -1,0 +1,12 @@
+#pragma once
+
+enum Powerup {
+	STICKY_PADDLE,
+	SPEED,
+	WIDTH,
+	BREAKTHROUGH,
+	CHAOS,
+	CONFUSE,
+	SHAKE,
+	NONE
+};

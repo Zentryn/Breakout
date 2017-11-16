@@ -41,10 +41,12 @@ void Timing::endUpdate()
 		}
 	}
 
+	/*
 	if (m_currentFrame++ == 10) {
 		Logger::Log("FPS: " + std::to_string(m_fps));
 		m_currentFrame = 0;
 	}
+	*/
 }
 
 

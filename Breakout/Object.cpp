@@ -7,7 +7,7 @@ Object::Object()
 }
 
 
-Object::Object(float XPos, float YPos, int Width, int Height, glm::vec3 Color, int Health, bool IsSolid, bool IsStatic, bool IsDestructible, const glm::vec2 &dir /*= glm::vec2(0.0f)*/)
+Object::Object(float XPos, float YPos, int Width, int Height, glm::vec3 Color, int Health, bool IsSolid, bool IsStatic, bool IsDestructible, Powerup aPowerup /*= NONE*/, const glm::vec2 &dir /*= glm::vec2(0.0f)*/)
 {
 	xPos = XPos;
 	yPos = YPos;
@@ -19,6 +19,7 @@ Object::Object(float XPos, float YPos, int Width, int Height, glm::vec3 Color, i
 	isStatic = IsStatic;
 	isDestructible = IsDestructible;
 	direction = dir;
+	powerup = aPowerup;
 }
 
 
@@ -27,7 +28,7 @@ Object::~Object()
 }
 
 
-void Object::init(float XPos, float YPos, int Width, int Height, glm::vec3 Color, int Health, bool IsSolid, bool IsStatic, bool IsDestructible, const glm::vec2 &dir /*= glm::vec2(0.0f)*/)
+void Object::init(float XPos, float YPos, int Width, int Height, glm::vec3 Color, int Health, bool IsSolid, bool IsStatic, bool IsDestructible, Powerup aPowerup /*= NONE*/, const glm::vec2 &dir /*= glm::vec2(0.0f)*/)
 {
 	xPos = XPos;
 	yPos = YPos;
@@ -39,6 +40,7 @@ void Object::init(float XPos, float YPos, int Width, int Height, glm::vec3 Color
 	isStatic = IsStatic;
 	isDestructible = IsDestructible;
 	direction = dir;
+	powerup = aPowerup;
 }
 
 

@@ -1,5 +1,6 @@
 #pragma once
 
+#include "GameManager.h"
 #include "LevelManager.h"
 
 #include <vector>
@@ -12,6 +13,7 @@
 #include <Engine/Resources.h>
 #include <Engine/GLTexture2D.h>
 #include <Engine/InputManager.h>
+#include <Engine/RandomEngine.h>
 
 class App
 {
@@ -25,8 +27,6 @@ private:
 	void gameLoop();
 	void processInput();
 	void draw();
-
-	bool m_exit = false;
 
 	LevelManager m_levelManager;
 

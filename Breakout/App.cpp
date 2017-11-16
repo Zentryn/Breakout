@@ -15,8 +15,9 @@ App::~App()
 void App::run()
 {
 	initSystems();
+	GameManager::SetGameOver(false);
 
-	while (!m_exit) {
+	while (!GameManager::IsGameOver()) {
 		gameLoop();
 	}
 }
@@ -24,6 +25,8 @@ void App::run()
 
 void App::initSystems()
 {
+	RandomEngine::Init();
+
 	//// Initialize Engine ////
 	Logger::Log("Initializing SDL & OpenGL...");
 		Engine::init();
@@ -89,7 +92,7 @@ void App::processInput()
 	while (SDL_PollEvent(&event)) {
 		switch (event.type) {
 		case SDL_QUIT:
-			m_exit = true;
+			GameManager::SetGameOver(true);
 			break;
 		case SDL_KEYDOWN:
 			m_inputManager.pressKey(event.key.keysym.sym);

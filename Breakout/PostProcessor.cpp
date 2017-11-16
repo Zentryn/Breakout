@@ -1,6 +1,7 @@
 #include "PostProcessor.h"
 #include <Engine/Logger.h>
 #include <algorithm>
+#include "GameManager.h"
 
 PostProcessor::PostProcessor()
 {
@@ -71,6 +72,14 @@ void PostProcessor::init(float &screenWidth, float &screenHeight)
 	};
 	m_shader.setFloatArray("blur_kernel", 9, blurKernel);
 
+	int edgeKernel[9] = {
+		-1, -1, -1,
+		-1,  8, -1,
+		-1, -1, -1
+	};
+	m_shader.setIntArray("edge_kernel", 9, edgeKernel);
+
+
 	m_shader.unuse();
 
 	m_windowWidth = screenWidth;
@@ -83,7 +92,6 @@ void PostProcessor::init(float &screenWidth, float &screenHeight)
 void PostProcessor::startRender()
 {
 	glBindFramebuffer(GL_FRAMEBUFFER, m_msfbo);
-	//glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT);
 }
 
@@ -100,9 +108,9 @@ void PostProcessor::endRender()
 void PostProcessor::renderEffects()
 {
 	m_shader.use();
-	m_shader.setInt("shake", static_cast<int>(m_shake));
-	m_shader.setInt("chaos", static_cast<int>(m_chaos));
-	m_shader.setInt("confuse", static_cast<int>(m_confuse));
+	m_shader.setInt("shake", static_cast<int>(GameManager::Powerups[SHAKE]));
+	m_shader.setInt("chaos", static_cast<int>(GameManager::Powerups[CHAOS]));
+	m_shader.setInt("confuse", static_cast<int>(GameManager::Powerups[CONFUSE]));
 	m_shader.setFloat("time", SDL_GetTicks() / 1000.0f);
 
 	glActiveTexture(GL_TEXTURE0);
@@ -111,42 +119,43 @@ void PostProcessor::renderEffects()
 	glBindVertexArray(m_vao);
 	glDrawArrays(GL_TRIANGLES, 0, 6);
 	glBindVertexArray(0);
-
+	
 	m_shader.unuse();
 }
 
 
-void PostProcessor::startEffect(Effect effect)
+void PostProcessor::startEffect(Powerup powerup)
 {
-	if (effect == SHAKE) {
-		m_shake = true;
+	if (powerup != STICKY_PADDLE) GameManager::Powerups[powerup] = true;
+
+	if (powerup == SHAKE) {
 		m_shakeTimer = SHAKE_EFFECT_LENGTH_SECONDS;
 	}
-	else if (effect == CHAOS) {
-		m_chaos = true;
+	else if (powerup == CHAOS) {
 		m_chaosTimer = CHAOS_EFFECT_LENGTH_SECONDS;
+		GameManager::Powerups[CONFUSE] = false;
 	}
-	else if (effect == CONFUSE) {
-		m_confuse = true;
+	else if (powerup == CONFUSE) {
 		m_confuseTimer = CONFUSE_EFFECT_LENGTH_SECONDS;
+		GameManager::Powerups[CHAOS] = false;
 	}
 }
 
 
 void PostProcessor::update()
 {
-	float decrease = 1.0f / 60.0f;
+	float decrease = 1.0f / 144.0f;
 
 	m_shakeTimer = std::max(0.0f, m_shakeTimer - decrease);
 	m_chaosTimer = std::max(0.0f, m_chaosTimer - decrease);
 	m_confuseTimer = std::max(0.0f, m_confuseTimer - decrease);
 
 	if (m_shakeTimer <= 0.0f)
-		m_shake = false;
+		GameManager::Powerups[SHAKE] = false;
 	if (m_chaosTimer <= 0.0f)
-		m_chaos = false;
+		GameManager::Powerups[CHAOS] = false;
 	if (m_confuseTimer <= 0.0f)
-		m_confuse = false;
+		GameManager::Powerups[CONFUSE] = false;
 }
 
 

@@ -226,6 +226,11 @@ void ShaderProgram::setKernel(const char* name, const float value[9][2])
 	glUniform2fv(getUniformLocation(name), 9, (GLfloat*)value);
 }
 
+void ShaderProgram::setIntArray(const char* name, const int nrElements, const int value[])
+{
+	glUniform1iv(getUniformLocation(name), nrElements, value);
+}
+
 void ShaderProgram::setFloatArray(const char* name, const int nrElements, const float value[])
 {
 	glUniform1fv(getUniformLocation(name), nrElements, value);
