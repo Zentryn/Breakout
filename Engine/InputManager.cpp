@@ -60,7 +60,7 @@ bool InputManager::isKeyDown(unsigned int keyID)
 
 bool InputManager::wasKeyPressed(unsigned int keyID)
 {
-	return (isKeyDown(keyID) && m_prevKeymap[keyID]);
+	return (isKeyDown(keyID) && !m_prevKeymap[keyID]);
 }
 
 }

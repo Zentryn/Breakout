@@ -74,7 +74,7 @@ void Resources::LoadFont(const std::string &name, int height)
 
 	FT_Face face;
 	if (FT_New_Face(ft, path.c_str(), 0, &face))
-		Logger::Error("Failed to load font!");
+		Logger::Error("Failed to load font " + path + "!");
 
 	FT_Set_Pixel_Sizes(face, 0, height);
 
