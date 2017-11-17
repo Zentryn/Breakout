@@ -19,6 +19,7 @@ public:
 
 	void init(const std::string& path, float windowWidth, float windowHeight);
 	void update(PostProcessor* postprocessor, float deltaTime);
+	void reset();
 	void breakBlock(int idx, PostProcessor* postprocessor);
 	void render(Engine::ShaderProgram *shader, Engine::GLTexture2D &paddle, Engine::GLTexture2D &ball, Engine::GLTexture2D &block, Engine::GLTexture2D solidBlock, Engine::GLTexture2D &background, Engine::GLTexture2D &powerupSpeed, Engine::GLTexture2D &powerupSticky, Engine::GLTexture2D &powerupPassthrough, Engine::GLTexture2D &powerupWidth, Engine::GLTexture2D &powerupChaos, Engine::GLTexture2D &powerupConfuse);
 	void movePaddle(float xChange, float yChange, float deltaTime);
@@ -44,6 +45,7 @@ private:
 	bool m_stickToPaddle = false;
 	float m_breakThroughTimer = 0.0f;
 	std::vector<Object> m_blocks;
-	std::vector<Object> m_powerupObjects;
+	std::string m_path = "";
+	std::vector<Object> m_powerupObjects = std::vector<Object>();
 };
 

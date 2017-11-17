@@ -6,8 +6,10 @@
 #include <algorithm>
 #include <Engine/RandomEngine.h>
 #include <Engine/Logger.h>
+#include <Engine/TextRenderer.h>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
+#include <Engine/AudioEngine.h>
 
 Level::Level()
 {
@@ -24,8 +26,10 @@ void Level::init(const std::string& path, float windowWidth, float windowHeight)
 	std::ifstream file(path);
 	std::vector<std::string> data;
 	std::string line;
+	m_path = path;
 
 	setupRendering();
+	GameManager::SetLives(2);
 
 	// Load level's data from file
 	if (file.is_open()) {
@@ -47,7 +51,7 @@ void Level::init(const std::string& path, float windowWidth, float windowHeight)
 	int paddleHeight = static_cast<int>(windowHeight) / 25;
 	int paddleX = static_cast<int>(windowWidth) / 2 - paddleWidth / 2;
 	int paddleY = static_cast<int>(windowHeight) - paddleHeight;
-	m_paddle.init(true, (float)paddleX, (float)paddleY, paddleWidth, paddleHeight, 8.0f, COLOR_CODES.at(COLOR_NONE));
+	m_paddle.init(true, (float)paddleX, (float)paddleY, paddleWidth, paddleHeight, 10.0f, COLOR_CODES.at(COLOR_NONE));
 
 	resetBall();
 	m_ball.speed = 8.0f;
@@ -72,7 +76,7 @@ void Level::init(const std::string& path, float windowWidth, float windowHeight)
 			}
 			// Colored blocks
 			else if (data[y][x] != AIR_BLOCK) {
-				bool powerup = RandomEngine::GetSuccessWithChance(20);
+				bool powerup = RandomEngine::GetSuccessWithChance(15);
 
 				Powerup powerupInBlock = NONE;
 				if (powerup) {
@@ -101,6 +105,17 @@ void Level::init(const std::string& path, float windowWidth, float windowHeight)
 			}
 		}
 	}
+}
+
+
+void Level::reset()
+{
+	m_blocks.clear();
+	init(m_path, m_windowWidth, m_windowHeight);
+	GameManager::Powerups[CHAOS] = false;
+	GameManager::Powerups[STICKY_PADDLE] = true;
+	GameManager::SetInMenu(true);
+	GameManager::SetLives(3);
 }
 
 
@@ -169,8 +184,17 @@ void Level::update(PostProcessor* postprocessor, float deltaTime)
 		count++;
 	}
 
+	if (GameManager::GetLives() == 0) {
+		GameManager::SetGameOver(true);
+		GameManager::Powerups[STICKY_PADDLE] = true;
+	}
+
 	for (size_t i = 0; i < m_powerupObjects.size(); i++) {
 		m_powerupObjects[i].update(deltaTime);
+		if (m_powerupObjects[i].yPos > m_windowHeight - m_powerupObjects[i].height) {
+			m_powerupObjects.erase(m_powerupObjects.begin() + i);
+			i--;
+		}
 	}
 
 	// Check if game is won
@@ -185,6 +209,18 @@ void Level::update(PostProcessor* postprocessor, float deltaTime)
 	if (gameWon) {
 		Logger::Log("Game won!");
 	}
+
+	// Update breakthrough powerup
+	if (m_breakThroughTimer > 0.0f) {
+		float decrease = 1.0f / 144.0f;
+		m_breakThroughTimer = std::max(m_breakThroughTimer - decrease, 0.0f);
+		if (m_breakThroughTimer == 0.0f) {
+			GameManager::Powerups[BREAKTHROUGH] = false;
+		}
+	}
+
+	if (GameManager::IsGameWon()) postprocessor->startEffect(CHAOS);
+	if (GameManager::IsGameOver()) postprocessor->startEffect(SHAKE);
 }
 
 
@@ -253,8 +289,10 @@ bool Level::checkCollision(PostProcessor* postProcessor)
 		else if (m_ball.xPos < 0) m_ball.direction.x *= -1;
 
 		if (ballCenterY + ballYRadius >= m_windowHeight) {
-			//GameManager::ReduceLife();
-			//resetBall();
+			if (!GameManager::IsGameWon()) {
+				GameManager::ReduceLife();
+				resetBall();
+			}
 			m_ball.direction.y *= -1;
 		}
 		else if (m_ball.yPos < 0) m_ball.direction.y *= -1;
@@ -287,6 +325,7 @@ bool Level::checkCollision(PostProcessor* postProcessor)
 					powerupsToRemove.push_back(i);
 					postProcessor->startEffect(m_powerupObjects[i].powerup);
 					applyPowerup(m_powerupObjects[i].powerup);
+					Engine::AudioEngine::Play2D("Audio/powerup.wav", false);
 				}
 			}
 		}
@@ -312,6 +351,8 @@ bool Level::checkCollision(PostProcessor* postProcessor)
 		if (xDiff < minXDiff) {
 			// Y Collision
 			if (yDiff < minYDiff) {
+				Engine::AudioEngine::Play2D("Audio/bleep.wav", false);
+
 				float collisionDistFromCenter = (m_ball.xPos + m_ball.width / 2) - (m_paddle.xPos + m_paddle.width / 2);
 				float farthestCollision = m_paddle.width / 2;
 
@@ -391,14 +432,21 @@ bool Level::checkCollision(PostProcessor* postProcessor)
 		if (xDiff < minXDiff) {
 			// Y Collision
 			if (yDiff < minYDiff) {
+				if (!m_blocks[i].isDestructible)
+					Engine::AudioEngine::Play2D("Audio/solid.wav", false);
+				else
+					Engine::AudioEngine::Play2D("Audio/bleep.mp3", false);
+
 				blocksToBreak.push_back(i);
-				if (yDiff >= minYDiff - 1.0f) {
-					yCollision = true;
-					yChange = (ballCenterY > blockCenterY) ? 1.0f : -1.0f;
-				}
-				else {
-					xCollision = true;
-					xChange = (ballCenterX > blockCenterX) ? 1.0f : -1.0f;
+				if (!GameManager::Powerups[BREAKTHROUGH] || !m_blocks[i].isDestructible) {
+					if (yDiff >= minYDiff - 1.0f) {
+						yCollision = true;
+						yChange = (ballCenterY > blockCenterY) ? 1.0f : -1.0f;
+					}
+					else {
+						xCollision = true;
+						xChange = (ballCenterX > blockCenterX) ? 1.0f : -1.0f;
+					}
 				}
 			}
 		}
@@ -441,8 +489,9 @@ void Level::render(Engine::ShaderProgram *shader, Engine::GLTexture2D &paddle, E
 	glActiveTexture(GL_TEXTURE0);
 	glBindVertexArray(m_vao);
 
+	//// Background ////
 	/*
-	{ //// Background ////
+	if (!GameManager::Powerups[CHAOS] && !GameManager::Powerups[CONFUSE]) {
 		glm::mat4 model;
 		model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f));
 		model = glm::scale(model, glm::vec3(background.width, background.height, 1.0f));
@@ -451,8 +500,8 @@ void Level::render(Engine::ShaderProgram *shader, Engine::GLTexture2D &paddle, E
 
 		glBindTexture(GL_TEXTURE_2D, background.id);
 		glDrawArrays(GL_TRIANGLES, 0, 6);
-	}
-	*/
+	}*/
+
 
 	{ //// Paddle ////
 		glm::mat4 model;
@@ -517,6 +566,22 @@ void Level::render(Engine::ShaderProgram *shader, Engine::GLTexture2D &paddle, E
 	glBindVertexArray(0);
 
 	shader->unuse();
+
+	
+	if (GameManager::IsInMenu()) {
+		Engine::TextRenderer::Render("Change level with arrow keys", 420.0f, m_windowHeight / 2.0f - 50.0f, 1.0f, glm::vec3(1.0f), m_windowWidth, m_windowHeight);
+		Engine::TextRenderer::Render("Release ball by pressing space", 405.0f, m_windowHeight / 2.0f - 100.0f, 1.0f, glm::vec3(1.0f), m_windowWidth, m_windowHeight);
+	}
+	else if (GameManager::IsGameOver()) {
+		Engine::TextRenderer::Render("You lost!", 605.0f, m_windowHeight / 2.0f - 50.0f, 1.0f, glm::vec3(1.0f, 0.0f, 0.0f), m_windowWidth, m_windowHeight);
+		Engine::TextRenderer::Render("Press Enter to play again or ESC to quit", 300.0f, m_windowHeight / 2.0f - 100.0f, 1.0f, glm::vec3(1.0f, 0.0f, 0.0f), m_windowWidth, m_windowHeight);
+	}
+	else if (!GameManager::IsGameWon())
+		Engine::TextRenderer::Render("Lives: " + std::to_string(GameManager::GetLives()), 20.0f, m_windowHeight - 0.035f * m_windowHeight - 10.0f, 1.0f, glm::vec3(1.0f), m_windowWidth, m_windowHeight);
+	else {
+		Engine::TextRenderer::Render("You beat the game!", 520.0f, m_windowHeight / 2.0f - 50.0f, 1.0f, glm::vec3(0.0f, 1.0f, 0.0f), m_windowWidth, m_windowHeight);
+		Engine::TextRenderer::Render("Press Enter to play again or ESC to quit", 300.0f, m_windowHeight / 2.0f - 100.0f, 1.0f, glm::vec3(0.0f, 1.0f, 0.0f), m_windowWidth, m_windowHeight);
+	}
 }
 
 

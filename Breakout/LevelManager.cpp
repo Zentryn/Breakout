@@ -47,6 +47,7 @@ void LevelManager::init(float windowWidth, float windowHeight)
 		std::stringstream ss;
 		Level level;
 		ss << p;
+		Logger::Log("Level found: " + ss.str());
 		
 		level.init(ss.str(), windowWidth, windowHeight);
 		m_levels[index++] = level;
@@ -95,6 +96,17 @@ void LevelManager::update(Engine::InputManager *inputManager, float &deltaTime)
 		}
 	}
 
+	if (GameManager::IsInMenu()) {
+		if (inputManager->wasKeyPressed(SDLK_UP)) {
+			m_currentLevel++;
+			if (m_currentLevel == m_levels.size()) m_currentLevel = 0;
+		}
+		if (inputManager->wasKeyPressed(SDLK_DOWN)) {
+			m_currentLevel--;
+			if (m_currentLevel < 0) m_currentLevel = m_levels.size() - 1;
+		}
+	}
+
 	if (inputManager->wasKeyPressed(SDLK_LSHIFT)) {
 		m_postProcessor.startEffect(Powerup::CHAOS);
 	}
@@ -104,9 +116,21 @@ void LevelManager::update(Engine::InputManager *inputManager, float &deltaTime)
 
 	// Release sticky ball
 	if (inputManager->wasKeyPressed(SDLK_SPACE)) {
-		if (GameManager::Powerups[STICKY_PADDLE]) {
+		if (GameManager::Powerups[STICKY_PADDLE] && !GameManager::IsGameOver()) {
 			GameManager::Powerups[STICKY_PADDLE] = false;
 			m_levels[m_currentLevel].setBallMovement(glm::vec2(0.0f, -1.0f));
+			if (GameManager::IsInMenu()) GameManager::SetInMenu(false);
+		}
+	}
+
+	if (inputManager->wasKeyPressed(SDLK_ESCAPE)) {
+		GameManager::SetExitGame(true);
+	}
+	if (inputManager->wasKeyPressed(SDLK_RETURN)) {
+		if (GameManager::IsGameOver() || GameManager::IsGameWon()) {
+			m_levels[m_currentLevel].reset();
+			GameManager::SetGameOver(false);
+			GameManager::SetGameWon(false);
 		}
 	}
 }

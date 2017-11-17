@@ -17,7 +17,7 @@ void App::run()
 	initSystems();
 	GameManager::SetGameOver(false);
 
-	while (!GameManager::IsGameOver()) {
+	while (!GameManager::ShouldExitGame()) {
 		gameLoop();
 	}
 }
@@ -63,6 +63,11 @@ void App::initSystems()
 	Logger::Log("Initializing timing systems...");
 		m_timing.init(144.0f);
 	Logger::Log("Timing systems initialized.");
+
+	Engine::TextRenderer::Init();
+	Engine::Resources::LoadFont("OCRAEXT.TTF", 0.035f * m_window.getHeight());
+	Engine::AudioEngine::SetVolume(0.2f);
+	Engine::AudioEngine::Play2D("Audio/breakout.mp3", true);
 }
 
 
@@ -71,13 +76,14 @@ void App::gameLoop()
 	m_timing.beginUpdate();
 
 	processInput();
-	m_inputManager.update();
 
 	int i = 0;
 	while (m_timing.getDeltaTime() > 0.0f && i++ < Engine::MAX_PHYSICS_STEPS) {
 		float deltaTime = m_timing.updateDeltaTime();
 		m_levelManager.update(&m_inputManager, deltaTime);
 	}
+
+	m_inputManager.update();
 
 	draw();
 
@@ -92,7 +98,7 @@ void App::processInput()
 	while (SDL_PollEvent(&event)) {
 		switch (event.type) {
 		case SDL_QUIT:
-			GameManager::SetGameOver(true);
+			GameManager::SetExitGame(true);
 			break;
 		case SDL_KEYDOWN:
 			m_inputManager.pressKey(event.key.keysym.sym);

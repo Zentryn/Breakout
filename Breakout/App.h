@@ -11,9 +11,11 @@
 #include <Engine/Timing.h>
 #include <Engine/Renderer.h>
 #include <Engine/Resources.h>
+#include <Engine/AudioEngine.h>
 #include <Engine/GLTexture2D.h>
 #include <Engine/InputManager.h>
 #include <Engine/RandomEngine.h>
+#include <Engine/TextRenderer.h>
 
 class App
 {
