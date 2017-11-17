@@ -29,7 +29,6 @@ void Level::init(const std::string& path, float windowWidth, float windowHeight)
 	m_path = path;
 
 	setupRendering();
-	GameManager::SetLives(2);
 
 	// Load level's data from file
 	if (file.is_open()) {
